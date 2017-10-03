@@ -1,0 +1,33 @@
+namespace com.ibm.streamsx.openwhisk;
+
+composite Push_Notification_Example {
+
+	graph
+
+		stream<rstring jsonString> BeaconOut = Beacon()
+		{
+			param
+				period : 2.0 ;
+				iterations : 5u ;
+			output
+				BeaconOut : jsonString =
+					'{"text" : "hello push_notifications from streams", "userIds": ["user1"]}' ;
+		}
+
+
+		() as FSink = FileSink(OWAction_2_out)
+		{
+			param
+				file : "results.txt" ;
+		}
+
+		stream<rstring jsonString> OWAction_2_out = OWAction(BeaconOut)
+		{
+			param
+				sync : "false" ;
+				action : "myPush1/sendMessage" ;
+				result : "true" ;
+				url : "https://openwhisk.ng.bluemix.net/api/v1/namespaces/_/actions/" ;
+		}
+
+}

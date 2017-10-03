@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="4.2.1.1" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:ti="http://www.ibm.com/xmlns/prod/streams/spl/toolkitInfo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="com.ibm.streamsx.OpenWhisk" requiredProductVersion="4.2.1.1" version="1.0.0">
+    <description/>
+    <uriTable>
+      <uri index="3" value="com.ibm.streamsx.openwhisk/Push_Notification_Example.spl"/>
+      <uri index="1" value="com.ibm.streamsx.openwhisk/OW_Action_Example.spl"/>
+      <uri index="2" value="com.ibm.streamsx.openwhisk/OWAction.spl"/>
+    </uriTable>
+    <namespace name="com.ibm.streamsx.openwhisk">
+      <compositeOp column="11" line="6" name="OW_Action_Example" potentialMain="true" uriIndex="1"/>
+      <compositeOp column="18" line="5" name="OWAction" potentialMain="false" public="true" uriIndex="2">
+        <parameter defaultValue="getSubmissionTimeValue(&quot;ow-auth-key&quot;)" metaType="Expression" name="authKey" optional="true" type="&lt;rstring>"/>
+        <parameter defaultValue="&quot;true&quot;" metaType="Expression" name="sync" optional="true" type="&lt;rstring>"/>
+        <parameter defaultValue="&quot;caps&quot;" metaType="Expression" name="action" optional="true" type="&lt;rstring>"/>
+        <parameter defaultValue="&quot;true&quot;" metaType="Expression" name="result" optional="true" type="&lt;rstring>"/>
+        <parameter defaultValue="&quot;https://openwhisk.ng.bluemix.net/api/v1/namespaces/_/actions/&quot;" metaType="Expression" name="url" optional="true" type="&lt;rstring>"/>
+        <inputPort name="In0" portIndex="0" type="stream&lt;rstring jsonString>"/>
+        <outputPort name="JsonString" portIndex="0"/>
+        <type column="3" line="15" name="httpResp" type="rstring payload, rstring errorMessage, rstring data, int64 dataSize, int64 responseCode" uriIndex="2"/>
+      </compositeOp>
+      <compositeOp column="11" line="3" name="Push_Notification_Example" potentialMain="true" uriIndex="3"/>
+    </namespace>
+    <dependency>
+      <common:name>com.ibm.streamsx.inet</common:name>
+      <common:version>2.1.0</common:version>
+    </dependency>
+    <dependency>
+      <common:name>com.ibm.streamsx.json</common:name>
+      <common:version>1.3.0</common:version>
+    </dependency>
+    <sabFiles>
+      <ti:include path="toolkit.xml" root="toolkitDir"/>
+      <ti:include path="impl/java/lib/**" root="toolkitDir"/>
+      <ti:include path="impl/java/bin/**" root="toolkitDir"/>
+      <ti:include path="impl/bin/**" root="toolkitDir"/>
+      <ti:include path="impl/lib/**" root="toolkitDir"/>
+      <ti:include path="impl/nl/*.dat" root="toolkitDir"/>
+      <ti:include path="etc/**" root="toolkitDir"/>
+      <ti:include path="lib/**" root="toolkitDir"/>
+      <ti:include path="nl/**" root="toolkitDir"/>
+      <ti:include path="opt/**" root="toolkitDir"/>
+    </sabFiles>
+  </toolkit>
+
+</toolkitModel>

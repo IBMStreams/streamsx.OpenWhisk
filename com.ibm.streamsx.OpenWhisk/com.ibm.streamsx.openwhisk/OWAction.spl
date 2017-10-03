@@ -1,0 +1,39 @@
+namespace com.ibm.streamsx.openwhisk;
+
+use com.ibm.streamsx.inet.http::HTTPPost ;
+
+public composite OWAction(input stream<rstring jsonString> In0 ; output JsonString)
+{
+	param
+		expression<rstring> $authKey : getSubmissionTimeValue("ow-auth-key") ;
+		expression<rstring> $sync : "true" ;
+		expression<rstring> $action : "caps" ;
+		expression<rstring> $result : "true" ;
+		expression<rstring> $url :
+			"https://openwhisk.ng.bluemix.net/api/v1/namespaces/_/actions/" ;
+	type
+		httpResp = rstring payload, rstring errorMessage, rstring data,
+			int64 dataSize, int64 responseCode ;
+
+	graph
+		stream<httpResp> HttpResp = HTTPPost(In0)
+		{
+			param
+				url : $url + $action + "?" + "blocking=" + $sync + "&" + "result=" +
+					$result ;
+				extraHeaders : $authKey ;
+				headerContentType : "application/json" ;
+		}
+
+		stream<rstring jsonString> JsonString = Custom(HttpResp)
+		{
+			logic
+				onTuple HttpResp :
+				{
+					//TODO: Error Handling
+					submit({ jsonString = HttpResp.data }, JsonString) ;
+				}
+
+		}
+
+}

@@ -1,0 +1,67 @@
+namespace com.ibm.streamsx.openwhisk;
+
+use com.ibm.streamsx.inet.http::HTTPPost ;
+use com.ibm.streamsx.json::JSONToTuple ;
+
+composite OW_Action_Example {
+	
+	graph
+
+		stream<rstring jsonString> OWAction_1_out = OWAction(BeaconOut)
+		{
+			param
+				sync : "true" ;
+				action : "caps" ;
+				result : "true" ;
+				url : "https://openwhisk.ng.bluemix.net/api/v1/namespaces/_/actions/" ;
+		}
+
+		stream<rstring jsonString> BeaconOut = Beacon()
+		{
+			param
+				period : 2.0 ;
+				iterations : 5u ;
+			output
+				BeaconOut : jsonString =
+					'{"name" : "openwhisk", "surname": "bluemix", "test": ["a", "b"]}' ;
+		}
+
+		stream<rstring result, rstring orig> JsonTuple = JSONToTuple(OWAction_1_out)
+		{
+		}
+
+		() as FSink = FileSink(OWAction_2_out)
+		{
+			param
+				file : "results.txt" ;
+		}
+
+		() as SinkOp = Custom(JsonTuple)
+		{
+			logic
+				onTuple JsonTuple :
+				{
+					println(JsonTuple) ;
+				}
+
+		}
+
+//		stream<rstring jsonString> OWAction_2_out = OWAction(BeaconOut)
+//		{
+//			param
+//				sync : "false" ;
+//				action : "caps2" ;
+//				result : "true" ;
+//				url : "https://openwhisk.ng.bluemix.net/api/v1/namespaces/_/actions/" ;
+//		}
+
+		stream<rstring jsonString> OWAction_2_out = OWAction(BeaconOut)
+		{
+			param
+				sync : "false" ;
+				action : "caps2" ;
+				result : "true" ;
+				url : "https://openwhisk.ng.bluemix.net/api/v1/namespaces/_/actions/" ;
+		}
+
+}
